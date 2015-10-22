@@ -1,0 +1,20 @@
+<package>
+  <description brief="decision_making">
+
+     decision_making
+
+  </description>
+  <author>Tanmay</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/decision_making</url>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+  <depend package="nav_msgs"/>
+  <depend package="geometry_msgs"/>
+  <depend package="tf"/>
+  <depend package="tf2"/>
+
+</package>
+
+
