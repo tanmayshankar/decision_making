@@ -49,6 +49,17 @@ weight_space = npy.linspace(0,1,weight_space_size)
 # Define learning rate alpha. 
 alpha =0.3
 
+#Define number of trajectories. 
+number_trajectories = 1 
+
+#Define length of each trajectory. 
+trajectory_length = 10
+
+#Defining set of demo trajectories. 
+from_states = npy.zeros(shape=(number_trajectories,trajectory_length,2))
+to_states = npy.zeros(shape=(number_trajectories,trajectory_length,2))
+actions = npy.zeros(shape=(number_trajectories,trajectory_length))
+
 # LEARNING WEIGHTS FROM DEMONSTRATION / EXPERT ACTIONS: 
 def learn_lamda(state_from, state_to, action):
 	# State must be a collection of x and y indices. Action must be a choice from the possible discretizations. 
@@ -65,7 +76,7 @@ def learn_lamda(state_from, state_to, action):
 
 	lamda = (1-alpha)*lamda + alpha*lamda_mod
 
-def learn_weights(state_from, state_to, action):
+def update_weights(state_from, state_to, action):
 	
 	mod_weights=npy.zeros(basis_size)
 	temp_weights=npy.zeros(basis_size)
@@ -84,8 +95,14 @@ def learn_weights(state_from, state_to, action):
 			if reward_value>max_reward_value:
 				max_reward_value=reward_value
 				mod_weights[i]=var_weight
+
 	for i in range(0,basis_size):
 		reward_weights[i] = reward_weights[i]*(1-alpha) + mod_weights[i]*alpha
+
+def learn_weights(state_from, state_to, action):
+
+
+
 
 
 
