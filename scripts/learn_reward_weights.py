@@ -58,9 +58,15 @@ trajectory_length = 10
 #Defining set of demo trajectories. 
 from_states = npy.zeros(shape=(number_trajectories,trajectory_length,2))
 to_states = npy.zeros(shape=(number_trajectories,trajectory_length,2))
-actions = npy.zeros(shape=(number_trajectories,trajectory_length))
+action_list = npy.zeros(shape=(number_trajectories,trajectory_length))
 
 # LEARNING WEIGHTS FROM DEMONSTRATION / EXPERT ACTIONS: 
+
+
+
+######THIS IS ONLY VALID FOR SINGLE STEP LOOKAHEAD 
+
+
 def learn_lamda(state_from, state_to, action):
 	# State must be a collection of x and y indices. Action must be a choice from the possible discretizations. 
 	max_reward_value = 0
@@ -101,6 +107,9 @@ def update_weights(state_from, state_to, action):
 
 def learn_weights(state_from, state_to, action):
 
+	for i in range(0,number_trajectories):
+		for j in range(0,trajectory_length):
+			update_weights(from_states[i][j][:],to_states[i][j][:],action_list[i][j])
 
 
 
