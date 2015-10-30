@@ -30,10 +30,14 @@ cost_maps = npy.zeros(shape=(number_costmaps,length,width))
 
 #Defining collective basis functions. 
 basis_functions = npy.zeros(shape=(basis_size, length, width))
+for i in range(0,number_value_functions):
+	basis_functions[i][:][:] = value_functions[i][:][:]
+for i in range(0,number_costmaps):
+	basis_functions[i+number_value_functions][:][:] = cost_maps[i][:][:]
 
-#Defining the weights of these value functions. 
-value_weights = npy.zeros(number_value_functions)
-costmap_weights = npy.zeros(number_costmaps)
+# #Defining the weights of these value functions. 
+# value_weights = npy.zeros(number_value_functions)
+# costmap_weights = npy.zeros(number_costmaps)
 
 #Defining collective weights. 
 reward_weights = npy.zeros(basis_size)
@@ -62,11 +66,7 @@ action_list = npy.zeros(shape=(number_trajectories,trajectory_length))
 
 # LEARNING WEIGHTS FROM DEMONSTRATION / EXPERT ACTIONS: 
 
-
-
 ######THIS IS ONLY VALID FOR SINGLE STEP LOOKAHEAD 
-
-
 def learn_lamda(state_from, state_to, action):
 	# State must be a collection of x and y indices. Action must be a choice from the possible discretizations. 
 	max_reward_value = 0
@@ -97,7 +97,10 @@ def update_weights(state_from, state_to, action):
 		# for j in range(0,weight_space_size):
 			temp_weights=reward_weights
 			temp_weights[i]=var_weight
-			reward_value = npy.dot(reward_weights, basis_functions[:][state_from[0]][state_from[1]])
+			# reward_value = npy.dot(reward_weights, basis_functions[:][state_from[0]][state_from[1]])
+			from_reward_value = npy.dot(reward_weights, basis_functions[:][state_from[0]][state_from[1]])
+			to_reward_value = npy.dot(reward_weights, basis_functions[:][state_to[0]][state_to[1]])
+			reward_value = to_reward_value - from_reward_value
 			if reward_value>max_reward_value:
 				max_reward_value=reward_value
 				mod_weights[i]=var_weight
