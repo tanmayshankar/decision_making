@@ -80,38 +80,6 @@ epsilon = 0.005
 buffer_size = 10
 convergence_test = npy.zeros(buffer_size)
 
-def update_weights(trajectory_index,trajectory_length):
-	
-	#Initializing the weights for search.
-	temp_weights = reward_weights
-	mod_weights = reward_weights
-
-
-	alpha_1 = 0.2
-
-	for j in range(0,basis_size):		
-		# mod_weights[j] = temp_weights[j]
-		prev_reward_value = cur_reward_value
-		cur_reward_value = calculate_expected_reward_increase(trajectory_index,trajectory_length,mod_weights)
-
-		if ((cur_reward_value - prev_reward_value)<epsilon):
-			convergence_test=npy.roll(convergence_test,-1)
-			convergence_test[buffer_size-1]=1
-
-		if convergence_test.prod()=0:
-			#CENTRAL DIFFERENCE DERIVATIVE
-			mod_weights[j] = temp_weights[j]+weight_h
-			upper_w_reward = calculate_expected_reward_increase(trajectory_index,trajectory_length,mod_weights)
-			mod_weights[j] = temp_weights[j]-weight_h
-			lower_w_reward = calculate_expected_reward_increase(trajectory_index, trajectory_length,mod_weights)
-
-			reward_derivative = upper_w_reward - lower_w_reward
-			reward_derivative /= weight_h
-
-			temp_weights[j] = temp_weights[j] - alpha_1 * reward_derivative
-		elif
-			return temp_weights
-
 def calculate_expected_reward_increase(trajectory_index,trajectory_length,calc_weights):
 	expected_increase = 0	
 	for t in range(0,trajectory_length):
@@ -124,12 +92,64 @@ def calculate_expected_reward_increase(trajectory_index,trajectory_length,calc_w
 		expected_increase += reward_increase
 	return expected_increase
 
+
+def update_weights(trajectory_index,trajectory_length):
+	
+	#Initializing the weights for search.
+	temp_weights = reward_weights
+	mod_weights = reward_weights
+	alpha_1 = 0.2
+
+	# for j in range(0,basis_size):		
+	# 	# mod_weights[j] = temp_weights[j]
+	# 	prev_reward_value = cur_reward_value
+	# 	cur_reward_value = calculate_expected_reward_increase(trajectory_index,trajectory_length,mod_weights)
+
+	# 	if ((cur_reward_value - prev_reward_value)<epsilon):
+	# 		convergence_test=npy.roll(convergence_test,-1)
+	# 		convergence_test[buffer_size-1]=1
+
+	# 	if convergence_test.prod()=0:
+	# 		#CENTRAL DIFFERENCE DERIVATIVE
+	# 		mod_weights[j] = temp_weights[j]+weight_h
+	# 		upper_w_reward = calculate_expected_reward_increase(trajectory_index,trajectory_length,mod_weights)
+	# 		mod_weights[j] = temp_weights[j]-weight_h
+	# 		lower_w_reward = calculate_expected_reward_increase(trajectory_index, trajectory_length,mod_weights)
+
+	# 		reward_derivative = upper_w_reward - lower_w_reward
+	# 		reward_derivative /= weight_h
+
+	# 		temp_weights[j] = temp_weights[j] - alpha_1 * reward_derivative
+	# 	elif
+	# 		return temp_weights
+
+	while convergence_test.prod()=0:
+		prev_reward_value = cur_reward_value
+		cur_reward_value = calculate_expected_reward_increase(trajectory_index,trajectory_length,mod_weights)
+
+		for j in range(0,basis_size):
+			mod_weights[j] = temp_weights[j] + weight_h
+			upper_w_reward = calculate_expected_reward_increase(trajectory_index,trajectory_length,mod_weights)
+			mod_weights[j] = temp_weights[j] - weight_h
+			lower_w_reward = calculate_expected_reward_increase(trajectory_index,trajectory_length,mod_weights)
+
+			reward_derivative = upper_w_reward - lower_w_reward
+			reward_derivative /= weight_h
+
+			temp_weights[j] = temp_weights[j] - alpha_1 * reward_derivative
+
+		if ((cur_reward_value - prev_reward_value)<epsilon):
+			convergence_test = npy.roll(convergence_test,-1)
+			convergence_test[buffer_size-1]
+
+	return temp_weights
+
+
 def learn_weights(state_from, state_to, action):
 	
 	reward_weights = npy.ones(basis_size)/basis_size
 	up_mod_weights = reward_weights
 	for trajectory_index in range(0,number_trajectories):
-
 		up_mod_weights = update_weights(trajectory_index,trajectory_lengths[trajectory_index],reward_weights)	
 		reward_weights[:] = reward_weights[:] + alpha*up_mod_weights[:]
 		# alpha = ((number_trajectories-1)/number_trajectories)*alpha
