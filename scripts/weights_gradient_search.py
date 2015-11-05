@@ -100,29 +100,6 @@ def update_weights(trajectory_index,trajectory_length):
 	mod_weights = reward_weights
 	alpha_1 = 0.2
 
-	# for j in range(0,basis_size):		
-	# 	# mod_weights[j] = temp_weights[j]
-	# 	prev_reward_value = cur_reward_value
-	# 	cur_reward_value = calculate_expected_reward_increase(trajectory_index,trajectory_length,mod_weights)
-
-	# 	if ((cur_reward_value - prev_reward_value)<epsilon):
-	# 		convergence_test=npy.roll(convergence_test,-1)
-	# 		convergence_test[buffer_size-1]=1
-
-	# 	if convergence_test.prod()=0:
-	# 		#CENTRAL DIFFERENCE DERIVATIVE
-	# 		mod_weights[j] = temp_weights[j]+weight_h
-	# 		upper_w_reward = calculate_expected_reward_increase(trajectory_index,trajectory_length,mod_weights)
-	# 		mod_weights[j] = temp_weights[j]-weight_h
-	# 		lower_w_reward = calculate_expected_reward_increase(trajectory_index, trajectory_length,mod_weights)
-
-	# 		reward_derivative = upper_w_reward - lower_w_reward
-	# 		reward_derivative /= weight_h
-
-	# 		temp_weights[j] = temp_weights[j] - alpha_1 * reward_derivative
-	# 	elif
-	# 		return temp_weights
-
 	while convergence_test.prod()=0:		
 
 		for j in range(0,basis_size):
