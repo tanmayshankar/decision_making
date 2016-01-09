@@ -28,7 +28,7 @@ max_path_length=100
 current_pose = npy.zeros(2)
 start_pose = npy.zeros(2)
 # ax.plot_surface(X,Y,path_plot,cmap=plt.cm.jet,cstride=1,rstride=1)
-pose_train = npy.zeros(shape=(100,2))
+pose_train = npy.zeros(shape=(max_path_length,2))
 
 state_counter = 0
 pose_train[state_counter] = start_pose
