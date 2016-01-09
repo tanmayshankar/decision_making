@@ -33,30 +33,42 @@ path_plot = npy.zeros(shape=(discrete_space_x,discrete_space_y))
 # Z = path_plot
 
 
-
+max_path_length=100
 current_pose = npy.zeros(2)
+start_pose = npy.zeros(2)
 # ax.plot_surface(X,Y,path_plot,cmap=plt.cm.jet,cstride=1,rstride=1)
+pose_train = npy.zeros(shape=(100,2))
 
+
+state_counter = 0
+pose_train[state_counter] = start_pose
 
 while (action!='q'):
-	action = raw_input("Hit a key now")
+	action = raw_input("Hit a key now: ")
 	print (action)
 	# fig = plt.figure()
-	
 	if action=='w':
-		current_pose[1]+=1
-	if action=='a':
-		current_pose[0]-=1
-	if action=='d':
 		current_pose[0]+=1
-	if action=='s':
+		state_counter+=1
+		pose_train[state_counter]=current_pose
+	if action=='a':
 		current_pose[1]-=1
+		state_counter+=1
+		pose_train[state_counter]=current_pose
+	if action=='d':
+		current_pose[1]+=1
+		state_counter+=1
+		pose_train[state_counter]=current_pose
+	if action=='s':
+		current_pose[0]-=1
+		state_counter+=1
+		pose_train[state_counter]=current_pose
 
 	path_plot[current_pose[0]][current_pose[1]]=1
 	imshow(path_plot, interpolation='nearest', origin='lower', extent=[0,10,0,10], aspect='auto')
 	plt.show(block=False)
 	colorbar()
 	draw()
-	show()
+	show() 
 
-
+print pose_train
