@@ -22,6 +22,7 @@ discrete_space_y = 50
 #Dummy set of variables for the random object spatial querying. 
 space_dist = npy.linspace(-max_dist,max_dist,discrete_space_x)
 
+
 path_plot = npy.zeros(shape=(discrete_space_x,discrete_space_y))
 
 max_path_length=100
