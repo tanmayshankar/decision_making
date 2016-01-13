@@ -21,20 +21,28 @@ discrete_size = 100
 basis_functions = npy.zeros(shape=(basis_size,discrete_size,discrete_size))
 weights = npy.ones(basis_size)/basis_size
 
+max_val=0
 for i in range(0,discrete_size):
 	for j in range(0,discrete_size):
 		basis_functions[0][i][j] = i
-		basis_functions[1][i][j] = j
-		basis_functions[2][i][j] = i+j
-		basis_functions[3][i][j] = -j
+		basis_functions[1][i][j] = -j
+		basis_functions[2][i][j] = i*j
+		basis_functions[3][i][j] = i**2
 		basis_functions[4][i][j] = 50
+
 
 for i in range(0,discrete_size):
 	for j in range(0,discrete_size):
 		for k in range(0,basis_size):
-			basis_functions[k][i][j] /= 198
+			if (basis_functions[k][i][j]>max_val):
+				max_val=basis_functions[k][i][j]
+
+for i in range(0,discrete_size):
+	for j in range(0,discrete_size):
+		for k in range(0,basis_size):
+			basis_functions[k][i][j] /= max_val
 		# basis_functions[2][i][j] += 1
-		basis_functions[3][i][j] += 1
+		# basis_functions[3][i][j] += 1
 
 weight_space_size=10
 weight_space = npy.linspace(0,1,weight_space_size)
@@ -70,6 +78,7 @@ buffer_size = 10
 
 # def calculate_expected_reward_increase(trajectory_index,trajectory_length,calc_weights):
 def calculate_expected_reward_increase(calc_weights):
+ 	
  	expected_increase = 0	
  	trajectory_length = 20
  	start_state = [7,8]
@@ -77,6 +86,7 @@ def calculate_expected_reward_increase(calc_weights):
  	to_state = [7,8]
  	reward_increase =0 
  	gamma = 0.95
+
  	for t in range(0,trajectory_length):
  		to_state[0] = from_state[0] + 1
  		to_state[1] = from_state[1] + 1
@@ -88,6 +98,7 @@ def calculate_expected_reward_increase(calc_weights):
 
 # def update_weights(trajectory_index,trajectory_length):
 def update_weights():	
+	
 	#Initializing the weights for search.
 	convergence_test = npy.zeros(buffer_size)
 	temp_weights = weights
@@ -131,6 +142,7 @@ def update_weights():
 		
 	return temp_weights
 
+print basis_functions	
 
 print update_weights()
 
