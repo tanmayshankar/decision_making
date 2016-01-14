@@ -110,7 +110,7 @@ def update_weights():
 	prev_reward_value = 0.0
 	cur_reward_value =0.0
 	diff = 0. 
-	max_iter=7000
+	max_iter=10000
 
 	while ((convergence_test.prod()==0)and(number_iterations<max_iter)):		
 		
@@ -135,6 +135,11 @@ def update_weights():
 			temp_weights[j] = temp_weights[j] + alpha_1 * reward_derivative #Should it be + alpha....
 
 		temp_weights = temp_weights[:]/temp_weights.sum()	
+		# weight_delta = temp_weights-trial_weights
+		
+		# for k in range(0,basis_size):
+			# weight_delta[k]=weight_delta[k]/temp_weights[k]
+
 		trial_weights=temp_weights
 
 		prev_reward_value = cur_reward_value
@@ -143,9 +148,15 @@ def update_weights():
 		# print prev_reward_value, cur_reward_value, ((cur_reward_value-prev_reward_value)/cur_reward_value)*100
 
 		if (((cur_reward_value - prev_reward_value)/cur_reward_value)<epsilon):
+		# if (npy.linalg.norm(weight_delta)<epsilon):
 			convergence_test = npy.roll(convergence_test,-1)
 			convergence_test[buffer_size-1]=1
+			# print npy.linalg.norm(weight_delta)
+		# print convergence_test
+		# print weight_delta
+		# if (temp_weights-trial_weights)
 
+		
 		number_iterations+=1
 		# print number_iterations
 		
