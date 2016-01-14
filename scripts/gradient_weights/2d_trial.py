@@ -71,7 +71,7 @@ reward_derivative = 0.0
 
 
 
-epsilon = 0.005
+
 
 buffer_size = 10
 
@@ -106,24 +106,29 @@ def update_weights():
 	trial_weights = weights
 	alpha_1 = 0.001
 	number_iterations=0
+	epsilon = 0.
 	prev_reward_value = 0.0
-	cur_reward_value =0.0 
+	cur_reward_value =0.0
+	diff = 0. 
 
 	while ((convergence_test.prod()==0)and(number_iterations<4000)):		
 		
 		for j in range(0,basis_size):
+			diff = 0.
 			if (trial_weights[j]<(1.0-weight_h)):
 				mod_weights[j] = trial_weights[j] + weight_h
+				diff+=weight_h
 			# upper_w_reward = calculate_expected_reward_increase(trajectory_index,trajectory_length,mod_weights)
 			upper_w_reward = calculate_expected_reward_increase(mod_weights)
 
 			if (trial_weights[j]>weight_h):
 				mod_weights[j] = trial_weights[j] - weight_h
+				diff+=weight_h
 			# lower_w_reward = calculate_expected_reward_increase(trajectory_index,trajectory_length,mod_weights)
 			lower_w_reward = calculate_expected_reward_increase(mod_weights)
 
-			reward_derivative = upper_w_reward - lower_w_reward
-			reward_derivative /= weight_h
+			reward_derivative = upper_w_reward - lower_w_reward			
+			reward_derivative /= diff
 
 
 			temp_weights[j] = temp_weights[j] + alpha_1 * reward_derivative #Should it be + alpha....
@@ -134,16 +139,18 @@ def update_weights():
 		prev_reward_value = cur_reward_value
 		cur_reward_value = calculate_expected_reward_increase(temp_weights)
 
+		# print prev_reward_value, cur_reward_value
+
 		if ((cur_reward_value - prev_reward_value)<epsilon):
 			convergence_test = npy.roll(convergence_test,-1)
-			convergence_test[buffer_size-1]
+			convergence_test[buffer_size-1]=1
 
 		number_iterations+=1
 		# print number_iterations
 		
 	return temp_weights
 
-print basis_functions	
+# print basis_functions	
 
 print update_weights()
 
