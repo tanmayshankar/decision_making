@@ -125,6 +125,7 @@ def update_weights():
 			reward_derivative = upper_w_reward - lower_w_reward
 			reward_derivative /= weight_h
 
+
 			temp_weights[j] = temp_weights[j] + alpha_1 * reward_derivative #Should it be + alpha....
 
 		temp_weights = temp_weights[:]/temp_weights.sum()	
