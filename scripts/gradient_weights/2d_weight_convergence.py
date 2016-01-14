@@ -147,8 +147,8 @@ def update_weights():
 
 		# print prev_reward_value, cur_reward_value, ((cur_reward_value-prev_reward_value)/cur_reward_value)*100
 
-		if (((cur_reward_value - prev_reward_value)/cur_reward_value)<epsilon):
-		# if (npy.linalg.norm(weight_delta)<epsilon):
+		# if (((cur_reward_value - prev_reward_value)/cur_reward_value)<epsilon):
+		if (npy.linalg.norm(weight_delta)<epsilon):
 			convergence_test = npy.roll(convergence_test,-1)
 			convergence_test[buffer_size-1]=1
 			# print npy.linalg.norm(weight_delta)
