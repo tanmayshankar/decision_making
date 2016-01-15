@@ -24,11 +24,11 @@ weights = npy.ones(basis_size)/basis_size
 max_val=0
 for i in range(0,discrete_size):
 	for j in range(0,discrete_size):
-		basis_functions[0][i][j] = i
+		basis_functions[0][i][j] = i-j
 		basis_functions[1][i][j] = -j
 		basis_functions[2][i][j] = i+j
-		basis_functions[3][i][j] = i-j
-		basis_functions[4][i][j] = 50
+		basis_functions[3][i][j] = -i-j
+		basis_functions[4][i][j] = j
 
 
 for i in range(0,discrete_size):
@@ -81,11 +81,11 @@ buffer_size = 10
 def define_trajectory(trajectory_index):
 	
 	trajectory_lengths[trajectory_index] = 20
-	trajectories[trajectory_index,0,0] = 6
-	trajectories[trajectory_index,0,1] = 8
+	trajectories[trajectory_index,0,0] = 26
+	trajectories[trajectory_index,0,1] = 28
 	for t in range(1,trajectory_lengths[trajectory_index]):
-		trajectories[trajectory_index,t,0] = trajectories[trajectory_index,t-1,0] +1 
-		trajectories[trajectory_index,t,1] = trajectories[trajectory_index,t-1,1] +1
+		trajectories[trajectory_index,t,0] = trajectories[trajectory_index,t-1,0] - (t%2)
+		trajectories[trajectory_index,t,1] = trajectories[trajectory_index,t-1,1] - 1
 	print trajectories
 
 def calculate_expected_reward_increase(trajectory_index,calc_weights):
@@ -111,7 +111,7 @@ def calculate_expected_reward_increase(trajectory_index,calc_weights):
 
  	return expected_increase
 
-def update_weights(trajectory_index):
+def update_weights(trajectory_index, weights):
 # def update_weights():	
 	
 	#Initializing the weights for search.
@@ -119,13 +119,13 @@ def update_weights(trajectory_index):
 	temp_weights = weights
 	mod_weights = weights
 	trial_weights = weights
-	alpha_1 = 0.001
+	alpha_1 = 0.01
 	number_iterations=0
 	epsilon = 0.00001
 	prev_reward_value = 0.0
 	cur_reward_value =0.0
 	diff = 0. 
-	max_iter=7000
+	max_iter=4000
 
 	while ((convergence_test.prod()==0)and(number_iterations<max_iter)):		
 		
@@ -167,7 +167,24 @@ def update_weights(trajectory_index):
 
 # print basis_functions	
 define_trajectory(0)
-print update_weights(0)
+# print update_weights(0, weights)
+
+reward_weights = npy.zeros(basis_size)
+dummy_weights = npy.zeros(basis_size)
+
+for i in range(0,5):
+	for j in range(0,basis_size):		
+		weights[j] = random.random()	
+	weights = weights[:]/weights.sum()
+	print "Initial weights: ",weights
+	# for j in range(0,basis_size):
+	dummy_weights = update_weights(0,weights)
+	reward_weights += dummy_weights
+	print "Final weights: ",dummy_weights,"\n"
+
+reward_weights = reward_weights[:]/reward_weights.sum()
+
+print reward_weights
 
 
 # def learn_weights(state_from, state_to, action):
