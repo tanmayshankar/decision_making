@@ -115,7 +115,7 @@ while (new_demo!='n'):
 trajectory_lengths=trajectory_lengths.astype(int)
 
 trajectories.remove(trajectories[0])
-print trajectories
+print "The trajectories are as follows: ",trajectories
 
 with file('trajectories.txt','w') as outfile:
 	# for data_slice in pairwise_value_func:
