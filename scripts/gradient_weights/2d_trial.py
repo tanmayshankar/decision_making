@@ -26,8 +26,8 @@ for i in range(0,discrete_size):
 	for j in range(0,discrete_size):
 		basis_functions[0][i][j] = i
 		basis_functions[1][i][j] = -j
-		basis_functions[2][i][j] = i*j
-		basis_functions[3][i][j] = i**2
+		basis_functions[2][i][j] = i+j
+		basis_functions[3][i][j] = i-j
 		basis_functions[4][i][j] = 50
 
 
@@ -106,12 +106,13 @@ def update_weights():
 	trial_weights = weights
 	alpha_1 = 0.001
 	number_iterations=0
-	epsilon = 0.
+	epsilon = 0.00001
 	prev_reward_value = 0.0
 	cur_reward_value =0.0
 	diff = 0. 
+	max_iter=7000
 
-	while ((convergence_test.prod()==0)and(number_iterations<4000)):		
+	while ((convergence_test.prod()==0)and(number_iterations<max_iter)):		
 		
 		for j in range(0,basis_size):
 			diff = 0.
@@ -139,9 +140,9 @@ def update_weights():
 		prev_reward_value = cur_reward_value
 		cur_reward_value = calculate_expected_reward_increase(temp_weights)
 
-		# print prev_reward_value, cur_reward_value
+		# print prev_reward_value, cur_reward_value, ((cur_reward_value-prev_reward_value)/cur_reward_value)*100
 
-		if ((cur_reward_value - prev_reward_value)<epsilon):
+		if (((cur_reward_value - prev_reward_value)/cur_reward_value)<epsilon):
 			convergence_test = npy.roll(convergence_test,-1)
 			convergence_test[buffer_size-1]=1
 

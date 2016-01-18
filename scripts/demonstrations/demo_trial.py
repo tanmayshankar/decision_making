@@ -66,5 +66,12 @@ while (action!='q'):
 	draw()
 	show() 
 
-# pose_train=npy.array(pose_train)
-print pose_train
+trajectories = npy.zeros(shape=(state_counter+1,2))
+for i in range(0,state_counter+1):
+	trajectories[i,:]=pose_train[i,:]
+ # pose_train=npy.array(pose_train)
+print trajectories
+
+with file('trajectory.txt','w') as outfile:	
+	npy.savetxt(outfile,trajectories,fmt='%-7.2f')
+# print pose_train

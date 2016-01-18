@@ -76,6 +76,8 @@ reward_derivative = 0.0
 buffer_size = 10
 
 
+
+
 # def calculate_expected_reward_increase(trajectory_index,trajectory_length,calc_weights):
 def calculate_expected_reward_increase(calc_weights):
  	

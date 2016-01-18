@@ -163,7 +163,7 @@ for i in range(0,2):
 def move_one_step(search_start):
 	state_deriv = 1
 	deriv_rate = 2
-	epsilon = 0.1
+	epsilon = 0.01
 	reward_derivative = npy.zeros(4)
 	max_deriv = 0
 	next_state = npy.zeros(2)
@@ -176,7 +176,7 @@ def move_one_step(search_start):
 	reward_derivative[2] = reward_val[search_start[0]+state_deriv][search_start[1]+state_deriv] - reward_val[search_start[0]-state_deriv][search_start[1]-state_deriv]
 	# 3 along +x -y.
 	reward_derivative[3] = reward_val[search_start[0]+state_deriv][search_start[1]-state_deriv] - reward_val[search_start[0]-state_deriv][search_start[1]+state_deriv]
-	
+		
 	max_deriv_arg = npy.argmax(npy.absolute(reward_derivative))
 	max_deriv = npy.amax(npy.absolute(reward_derivative))
 	# print "Maximum derivative:", max_deriv

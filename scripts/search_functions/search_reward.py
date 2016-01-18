@@ -10,6 +10,7 @@ import sys
 from mpl_toolkits.mplot3d import Axes3D
 import random
 from scipy.stats import rankdata
+import math
 from matplotlib.pyplot import *
 
 radius_threshold = 10
@@ -139,9 +140,22 @@ costmap = npy.loadtxt(str(sys.argv[2]))
 print costmap.shape
 print value_functions[0].shape
 
-
 # reward_val+= value_functions[4]*weights[0] + value_functions[1]*weights[1] + value_functions[3]*weights[2] + costmap*weights[3]
 reward_val = costmap
+
+dummy=100
+dummy_x=-1
+dummy_y=-1
+for i in range(0,discrete_space_x):
+	for j in range(0,discrete_space_y):
+		if reward_val[i][j]<dummy:
+			dummy_x=i
+			dummy_y=j
+			dummy=reward_val[i][j]
+
+print dummy_x,dummy_y
+
+
 # print reward_val
 
 robot_pose = npy.zeros(2)
@@ -160,13 +174,26 @@ for i in range(0,2):
 			if robot_pose[i]>space_dist[j] and robot_pose[i]<space_dist[j+1]:
 				robot_bucket[i]=j
 
-def move_one_step(search_start):
+def round_off(x):
+    n = int(x)
+    return n if n-1 < x <= n else n+1
+
+def move_one_step(search_init):
 	state_deriv = 1
-	deriv_rate = 2
-	epsilon = 0.1
-	reward_derivative = npy.zeros(4)
+	deriv_rate = 1
+	epsilon = 1/deriv_rate
+
+	#Minimum state change to prevent convergence.
+	# change_state = 2
+
+
+	reward_derivative = npy.zeros(8)
 	max_deriv = 0
 	next_state = npy.zeros(2)
+
+	search_start=search_init
+	# search_start[0]=round_off(search_start[0])
+	# search_start[1]=round_off(search_start[1])
 
 	# 0 along x. 
 	reward_derivative[0] = reward_val[search_start[0]+state_deriv][search_start[1]] - reward_val[search_start[0]-state_deriv][search_start[1]]
@@ -177,28 +204,89 @@ def move_one_step(search_start):
 	# 3 along +x -y.
 	reward_derivative[3] = reward_val[search_start[0]+state_deriv][search_start[1]-state_deriv] - reward_val[search_start[0]-state_deriv][search_start[1]+state_deriv]
 	
+	# # 4 along -x. 
+	reward_derivative[4] = reward_val[search_start[0]-state_deriv][search_start[1]] - reward_val[search_start[0]+state_deriv][search_start[1]]
+	# # 5 along -y. 
+	reward_derivative[5] = reward_val[search_start[0]][search_start[1]-state_deriv] - reward_val[search_start[0]][search_start[1]+state_deriv]
+	# # 6 along -x -y. 
+	reward_derivative[6] = reward_val[search_start[0]-state_deriv][search_start[1]-state_deriv] - reward_val[search_start[0]+state_deriv][search_start[1]+state_deriv]
+	# # 7 along -x +y.
+	reward_derivative[7] = reward_val[search_start[0]-state_deriv][search_start[1]+state_deriv] - reward_val[search_start[0]+state_deriv][search_start[1]-state_deriv]
+	
 	max_deriv_arg = npy.argmax(npy.absolute(reward_derivative))
 	max_deriv = npy.amax(npy.absolute(reward_derivative))
+
+	# max_deriv_arg = npy.argmin(reward_derivative)
+	# max_deriv = npy.amin(reward_derivative)
+
+	if (reward_derivative[max_deriv_arg]<0):
+		# max_deriv_arg=(max_deriv_arg+4)%4
+		# print "Flip."
 	# print "Maximum derivative:", max_deriv
 
-	if max_deriv<epsilon:
-		print "Well....",max_deriv
-		next_state[0] = -1
-		next_state[1] = -1
-	else:
-		print "Index:",max_deriv_arg,max_deriv
+	#changing convergence criteria. 
+	# print reward_derivative
+
+
+	# if abs(max_deriv)<epsilon:
+	# 	print "Well....",max_deriv
+	# 	# next_state[0] = -1
+	# 	# next_state[1] = -1
+	# 	reward_derivative[max_deriv_arg] = 1
+
+		print "Index:",max_deriv_arg,reward_derivative[max_deriv_arg]
 		if (max_deriv_arg==0):
-			next_state[0] = search_start[0] - reward_derivative[max_deriv_arg] * deriv_rate
+			next_state[0] = search_start[0] - math.floor(reward_derivative[max_deriv_arg] * deriv_rate)
 			next_state[1] = search_start[1]
 		elif (max_deriv_arg==1):
 			next_state[0] = search_start[0]
-			next_state[1] = search_start[1] - reward_derivative[max_deriv_arg] * deriv_rate
+			next_state[1] = search_start[1] - math.floor(reward_derivative[max_deriv_arg] * deriv_rate)
 		elif (max_deriv_arg==2):
-			next_state[0] = search_start[0] - reward_derivative[max_deriv_arg] * deriv_rate
-			next_state[1] = search_start[1] - reward_derivative[max_deriv_arg] * deriv_rate
+			next_state[0] = search_start[0] - math.floor(reward_derivative[max_deriv_arg] * deriv_rate)
+			next_state[1] = search_start[1] - math.floor(reward_derivative[max_deriv_arg] * deriv_rate)
 		elif (max_deriv_arg==3):
-			next_state[0] = search_start[0] - reward_derivative[max_deriv_arg] * deriv_rate
-			next_state[1] = search_start[1] + reward_derivative[max_deriv_arg] * deriv_rate
+			next_state[0] = search_start[0] - math.floor(reward_derivative[max_deriv_arg] * deriv_rate)
+			next_state[1] = search_start[1] + math.floor(reward_derivative[max_deriv_arg] * deriv_rate)
+		elif (max_deriv_arg==4):
+			next_state[0] = search_start[0] + math.floor(reward_derivative[max_deriv_arg] * deriv_rate)
+			next_state[1] = search_start[1]
+		elif (max_deriv_arg==5):
+			next_state[0] = search_start[0]
+			next_state[1] = search_start[1] + math.floor(reward_derivative[max_deriv_arg] * deriv_rate)
+		elif (max_deriv_arg==6):
+			next_state[0] = search_start[0] + math.floor(reward_derivative[max_deriv_arg] * deriv_rate)
+			next_state[1] = search_start[1] + math.floor(reward_derivative[max_deriv_arg] * deriv_rate)
+		elif (max_deriv_arg==7):
+			next_state[0] = search_start[0] + math.floor(reward_derivative[max_deriv_arg] * deriv_rate)
+			next_state[1] = search_start[1] - math.floor(reward_derivative[max_deriv_arg] * deriv_rate)
+	else:
+		max_deriv_arg=(max_deriv_arg+4)%4
+		print "Flip."
+		print "Index:",max_deriv_arg,reward_derivative[max_deriv_arg]
+		if (max_deriv_arg==0):
+			next_state[0] = search_start[0] - math.ceil(reward_derivative[max_deriv_arg] * deriv_rate)
+			next_state[1] = search_start[1]
+		elif (max_deriv_arg==1):
+			next_state[0] = search_start[0]
+			next_state[1] = search_start[1] - math.ceil(reward_derivative[max_deriv_arg] * deriv_rate)
+		elif (max_deriv_arg==2):
+			next_state[0] = search_start[0] - math.ceil(reward_derivative[max_deriv_arg] * deriv_rate)
+			next_state[1] = search_start[1] - math.ceil(reward_derivative[max_deriv_arg] * deriv_rate)
+		elif (max_deriv_arg==3):
+			next_state[0] = search_start[0] - math.ceil(reward_derivative[max_deriv_arg] * deriv_rate)
+			next_state[1] = search_start[1] + math.ceil(reward_derivative[max_deriv_arg] * deriv_rate)
+		elif (max_deriv_arg==4):
+			next_state[0] = search_start[0] + math.ceil(reward_derivative[max_deriv_arg] * deriv_rate)
+			next_state[1] = search_start[1]
+		elif (max_deriv_arg==5):
+			next_state[0] = search_start[0]
+			next_state[1] = search_start[1] + math.ceil(reward_derivative[max_deriv_arg] * deriv_rate)
+		elif (max_deriv_arg==6):
+			next_state[0] = search_start[0] + math.ceil(reward_derivative[max_deriv_arg] * deriv_rate)
+			next_state[1] = search_start[1] + math.ceil(reward_derivative[max_deriv_arg] * deriv_rate)
+		elif (max_deriv_arg==7):
+			next_state[0] = search_start[0] + math.ceil(reward_derivative[max_deriv_arg] * deriv_rate)
+			next_state[1] = search_start[1] - math.ceil(reward_derivative[max_deriv_arg] * deriv_rate)
 
 	return next_state
 
@@ -208,17 +296,40 @@ path_plot = reward_val
 def gradient_search(search_start):
 	grad_state = search_start
 	try_state = search_start
+	min_state_change=2
+	max_iter=4000
 	# while (!((try_state[0]==-1)&&(try_state[1]==-1))):
 	x=0
-	while ((try_state[0]!=-1)and(try_state[1]!=-1)):
-	# if 1:
+	buffer_size=10
+	convergence_test=npy.zeros(buffer_size)
+	# while ((try_state[0]!=-1)and(try_state[1]!=-1)):
+	
+		# while convergence_test.prod()=0:			
+
+		# 	if ((cur_reward_value - prev_reward_value)<epsilon):
+		# 		convergence_test = npy.roll(convergence_test,-1)
+		# 		convergence_test[buffer_size-1]
+		
+	while (convergence_test.prod()==0)and(x<max_iter):
 		grad_state = try_state
 		try_state = move_one_step(grad_state)
+		convergence_test=npy.roll(convergence_test,-1)
+		if (npy.linalg.norm(try_state-grad_state)<min_state_change):
+		# if (try)
+			# convergence_test=npy.roll(convergence_test,-1)
+			convergence_test[buffer_size-1]=1	
+			print "Uh Oh. Maybe."		
+		else:
+			convergence_test[buffer_size-1]=0
+			print "No problem."
+		#For Debugging: 
 		x+=1
 		print x, try_state
 		path_plot[try_state[0]][try_state[1]]=-1
-		# print try_state
+
 	return grad_state
+
+path_plot[dummy_x][dummy_y]=-1
 
 print "Robot bucket:", robot_bucket
 print "Robot pose:", robot_pose

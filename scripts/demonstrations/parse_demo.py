@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 # from ar_track_alvar.msg import AlvarMarkers
 import random
 from scipy.stats import rankdata
+from matplotlib.pyplot import *
+
 
 radius_threshold = 10
 discrete_size = 100
@@ -115,9 +117,9 @@ calculate_value_function(1)
 calculate_value_function(3)
 
 fig1 = plt.figure(1)
-fig2 = plt.figure(2)
-fig3 = plt.figure(3)
-fig4 = plt.figure(4)
+# fig2 = plt.figure(2)
+# fig3 = plt.figure(3)
+# fig4 = plt.figure(4)
 X,Y=npy.meshgrid(space_dist,space_dist)
 
 # weights = npy.ones(3)
@@ -169,24 +171,85 @@ for i in range(0,number_objects):
 
 
 # combo_val = value_functions[:]/3
-combo_val = value_functions[0]
+
+combo_val = npy.zeros(shape=(discrete_space_x,discrete_space_y))
 for i in range(0,number_objects):
 	combo_val+= value_functions[i] * neediness[i]
 combo_val /=3
 
+max_val = npy.amax(combo_val)
 
-ax1 = fig1.add_subplot(111,projection='3d')
-ax1.plot_surface(X,Y,combo_val,cmap=plt.cm.jet,cstride=1,rstride=1)
+# imshow(combo_val, interpolation='nearest', origin='lower', extent=[0,10,0,10], aspect='auto')
+# plt.show(block=False)
+# colorbar()
+# draw()
+# show() 
+
+
+action = 'd'
+discrete_space_x = 50
+discrete_space_y = 50
+
+#Dummy set of variables for the random object spatial querying. 
+space_dist = npy.linspace(-max_dist,max_dist,discrete_space_x)
+
+path_plot = npy.zeros(shape=(discrete_space_x,discrete_space_y))
+path_plot = combo_val
+max_path_length=100 
+current_pose = npy.zeros(2)
+start_pose = npy.zeros(2)
+# ax.plot_surface(X,Y,path_plot,cmap=plt.cm.jet,cstride=1,rstride=1)
+pose_train = npy.zeros(shape=(max_path_length,2))
+
+state_counter = 0
+pose_train[state_counter] = start_pose
+
+while (action!='q'):
+	action = raw_input("Hit a key now: ")
+	print (action)
+	# fig = plt.figure()
+	if action=='w':
+		current_pose[0]+=1
+		state_counter+=1
+		pose_train[state_counter]=current_pose
+		# pose_train.append(current_pose)
+	if action=='a':
+		current_pose[1]-=1
+		state_counter+=1
+		pose_train[state_counter]=current_pose
+		# pose_train.append(current_pose)
+	if action=='d':
+		current_pose[1]+=1
+		state_counter+=1
+		pose_train[state_counter]=current_pose
+		# pose_train.append(current_pose)
+	if action=='s':
+		current_pose[0]-=1
+		state_counter+=1
+		pose_train[state_counter]=current_pose
+		# pose_train.append(current_pose)
+
+	path_plot[current_pose[0]][current_pose[1]]=-max_val/4
+	imshow(path_plot, interpolation='nearest', origin='lower', extent=[0,10,0,10], aspect='auto')
+	plt.show(block=False)
+	colorbar()
+	draw()
+	show() 
+
+# pose_train=npy.array(pose_train)
+print pose_train
+# ax1 = fig1.add_subplot(111,projection='3d')
+# ax1.plot_surface(X,Y,combo_val,cmap=plt.cm.jet,cstride=1,rstride=1)
 # ax1.plot_surface(X,Y,object_location_function,cmap=plt.cm.jet,cstride=1,rstride=1)
 
-ax2 = fig2.add_subplot(111,projection='3d')
-ax2.plot_surface(X,Y,value_functions[4],cmap=plt.cm.jet,cstride=1,rstride=1)
+# ax2 = fig2.add_subplot(111,projection='3d')
+# ax2.plot_surface(X,Y,value_functions[4],cmap=plt.cm.jet,cstride=1,rstride=1)
 
-ax3 = fig3.add_subplot(111,projection='3d')
-ax3.plot_surface(X,Y,value_functions[1],cmap=plt.cm.jet,cstride=1,rstride=1)
+# ax3 = fig3.add_subplot(111,projection='3d')
+# ax3.plot_surface(X,Y,value_functions[1],cmap=plt.cm.jet,cstride=1,rstride=1)
 
-ax4 = fig4.add_subplot(111,projection='3d')
-ax4.plot_surface(X,Y,value_functions[3],cmap=plt.cm.jet,cstride=1,rstride=1)
+# ax4 = fig4.add_subplot(111,projection='3d')
+# ax4.plot_surface(X,Y,value_functions[3],cmap=plt.cm.jet,cstride=1,rstride=1)
 
 plt.show()
 
