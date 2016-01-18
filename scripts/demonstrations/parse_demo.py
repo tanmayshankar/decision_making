@@ -15,7 +15,7 @@ from matplotlib.pyplot import *
 
 max_dist = 5
 
-action = 'd'
+action = 'e'
 discrete_space_x = 50
 discrete_space_y = 50
 
@@ -35,8 +35,7 @@ state_counter = 0
 pose_train[state_counter] = start_pose
 
 while (action!='q'):
-	action = raw_input("Hit a key now: ")
-	print (action)
+	
 	# fig = plt.figure()
 	if action=='w':
 		current_pose[0]+=1
@@ -59,6 +58,7 @@ while (action!='q'):
 		pose_train[state_counter]=current_pose
 		# pose_train.append(current_pose)
 
+
 	path_plot[current_pose[0]][current_pose[1]]=1
 	imshow(path_plot, interpolation='nearest', origin='lower', extent=[0,10,0,10], aspect='auto')
 	plt.show(block=False)
@@ -66,11 +66,14 @@ while (action!='q'):
 	draw()
 	show() 
 
+	action = raw_input("Hit a key now: ")
+	print (action)
+
 trajectories = npy.zeros(shape=(state_counter+1,2))
 for i in range(0,state_counter+1):
 	trajectories[i,:]=pose_train[i,:]
  # pose_train=npy.array(pose_train)
-print trajectories
+print "Here is the pose train: ",trajectories
 
 with file('trajectory.txt','w') as outfile:	
 	npy.savetxt(outfile,trajectories,fmt='%-7.2f')
