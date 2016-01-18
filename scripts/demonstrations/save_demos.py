@@ -30,29 +30,24 @@ max_path_length=100
 current_pose = [0,0]
 # ax.plot_surface(X,Y,path_plot,cmap=plt.cm.jet,cstride=1,rstride=1)
 max_number_demos = 50
+pose_train = npy.zeros(shape=(max_number_demos,max_path_length,2))
 
 trajectory_lengths = npy.zeros(max_number_demos)
 
 state_counter = 0
+pose_train[state_counter] = start_pose
+
 number_demos = 0
 
-trajectories = [[[0,0],[1,2],[3,4]]]
-	
 while (new_demo!='n'):
 	
 	state_counter=0	
-	current_demo = [[0,0]]
 	
-	ax = random.randrange(0,discrete_space_x)
-	ay = random.randrange(0,discrete_space_y)
-	current_pose[0] = ax
-	current_pose[1] = ay
+	current_pose[0]= random.randrange(0,discrete_space_x)
+	current_pose[1]= random.randrange(0,discrete_space_y)
 	
-	current_demo[0][0] = ax
-	current_demo[0][1] = ay
-	print "Wait for it. ",current_demo
-	# pose_train[number_demos,state_counter,0] = current_pose[0]
-	# pose_train[number_demos,state_counter,1] = current_pose[1]
+	pose_train[number_demos,state_counter,0] = current_pose[0]
+	pose_train[number_demos,state_counter,1] = current_pose[1]
 
 	path_plot[:,:]=0.
 	action='e'
@@ -60,40 +55,28 @@ while (new_demo!='n'):
 	while (action!='q'):	
 		# fig = plt.figure()
 		if action=='w':
-			
-			state_counter+=1
-			# pose_train[number_demos,state_counter]=current_pose
-			# pose_train[number_demos][state_counter]=current_pose
-			current_demo.append([current_pose[0]+1,current_pose[1]])
 			current_pose[0]+=1
-			print "Wait for it. 1 ",current_demo
+			state_counter+=1
+			pose_train[number_demos,state_counter]=current_pose
+			# pose_train[number_demos][state_counter]=current_pose
 			# pose_train.append(current_pose)
 		if action=='a':
-			
-			state_counter+=1
-			# pose_train[number_demos,state_counter]=current_pose
-			# pose_train[number_demos][state_counter]=current_pose
-			current_demo.append([current_pose[0],current_pose[1]-1])
 			current_pose[1]-=1
-			print "Wait for it. 2 ",current_demo
+			state_counter+=1
+			pose_train[number_demos,state_counter]=current_pose
+			# pose_train[number_demos][state_counter]=current_pose
 			# pose_train.append(current_pose)
 		if action=='d':
-			
-			state_counter+=1
-			# pose_train[number_demos,state_counter]=current_pose
-			# pose_train[number_demos][state_counter]=current_pose
-			current_demo.append([current_pose[0],current_pose[1]+1])
 			current_pose[1]+=1
-			print "Wait for it. 3 ",current_demo
+			state_counter+=1
+			pose_train[number_demos,state_counter]=current_pose
+			# pose_train[number_demos][state_counter]=current_pose
 			# pose_train.append(current_pose)
 		if action=='s':
-			
+			current_pose[0]-=1
 			state_counter+=1
 			# pose_train[number_demos][state_counter]=current_pose
-			# pose_train[number_demos,state_counter]=current_pose
-			current_demo.append([current_pose[0]-1,current_pose[1]])
-			current_pose[0]-=1
-			print "Wait for it. 4 ",current_demo
+			pose_train[number_demos,state_counter]=current_pose
 			# pose_train.append(current_pose)
 
 		path_plot[current_pose[0]][current_pose[1]]=1		
@@ -107,17 +90,28 @@ while (new_demo!='n'):
 		# print (action)
 		
 		trajectory_lengths[number_demos] = state_counter+1
-
+		# print pose_train[number_demos,:,:]
 	number_demos+=1
-	print "Current demo was: ",current_demo
-	trajectories.append(current_demo)
-
 	new_demo = raw_input("Do you want to start a new demonstration? ")
-	
-trajectory_lengths=trajectory_lengths.astype(int)
 
-trajectories.remove(trajectories[0])
-print trajectories
+with file('trajectories.txt','w') as outfile:
+	for data_slice in trajectories:
+		npy.savetxt(outfile,data_slice,fmt='%-7.2f')
+		outfile.write('# New slice\n')
+
+# print (new_demo)
+# print "This is the pose train: ",pose_train
+
+# # trajectories = npy.zeros(shape=(state_counter+1,2))
+# # trajectories = npy.zeros(shape=(number_demos,state_counter+1,2))
+trajectories = npy.zeros(shape=(number_demos,state_counter+1,2))
+
+trajectory_lengths=trajectory_lengths.astype(int)
+	for j in range(0,number_demos):
+	 	for i in range(0,trajectory_lengths[j]):
+	 		trajectories[j,i,:]=pose_train[j,i,:]
+# 		# trajectories[jet][i][:] = pose_train[j][i][:]
+#  # pose_train=npy.array(pose_train)
 
 with file('trajectories.txt','w') as outfile:
 	# for data_slice in pairwise_value_func:
@@ -125,6 +119,4 @@ with file('trajectories.txt','w') as outfile:
 		npy.savetxt(outfile,data_slice,fmt='%-7.2f')
 		outfile.write('# New slice\n')
 
-# with file('trajectory.txt','w') as outfile:	
-	# npy.savetxt(outfile,trajectories,fmt='%-7.2f')
-# print pose_train
+print trajectories
