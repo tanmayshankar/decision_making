@@ -53,6 +53,8 @@ while (new_demo!='n'):
 	current_demo[0][1] = ay
 
 	path_plot[:,:]=0.
+	# path_plot[ax,ay]=-1
+
 	action='e'
 
 	while (action!='q'):		
