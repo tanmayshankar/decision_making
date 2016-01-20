@@ -1,1 +1,1 @@
-./scripts/basis_demos/calculate_weights.py learnt_data/demonstrations/trial_1/basis_functions.txt learnt_data/demonstrations/trial_1/weight_values.txt learnt_data/demonstrations/trial_1/trajectory_lengths.txt learnt_data/demonstrations/trial_1/trajectories.txt 
+./scripts/basis_demos/calculate_weights.py learnt_data/demonstrations/trial_3/basis_functions.txt learnt_data/demonstrations/trial_3/weight_values.txt learnt_data/demonstrations/trial_3/trajectory_lengths.txt learnt_data/demonstrations/trial_3/trajectories.txt 
