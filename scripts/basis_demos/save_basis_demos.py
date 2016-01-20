@@ -235,20 +235,25 @@ print "The trajectories are as follows: ",trajectories
 with file('trajectories.txt','w') as outfile:
 	# for data_slice in pairwise_value_func:
 	for data_slice in trajectories:
-		outfile.write('# New slice\n')
+		outfile.write('#New slice\n')
 		npy.savetxt(outfile,data_slice,fmt='%-7.2f')
 		
 with file('basis_functions.txt','w') as outfile:
-	outfile.write('New basis 4.\n')
+	outfile.write('#New basis 4.\n')
 	npy.savetxt(outfile,value_functions[4],fmt='%-7.2f')
-	outfile.write('New basis 3.\n')
+	outfile.write('#New basis 3.\n')
 	npy.savetxt(outfile,value_functions[3],fmt='%-7.2f')
-	outfile.write('New basis 1.\n')
+	outfile.write('#New basis 1.\n')
 	npy.savetxt(outfile,value_functions[1],fmt='%-7.2f')
 
 with file('weight_values.txt','w') as outfile: 
-	outfile.write('Weight values.\n')
+	outfile.write('#Weight values.\n')
 	npy.savetxt(outfile,weights,fmt='%-7.2f')
+
+with file('trajectory_lengths.txt','w') as outfile: 
+	outfile.write('#Trajectory_lengths.\n')
+	npy.savetxt(outfile,weights,fmt='%-7.2f')
+
 
 imshow(object_location_function, interpolation='nearest', origin='lower', extent=[0,10,0,10], aspect='auto')
 # imshow(path_plot, interpolation='nearest', origin='lower', extent=[0,10,0,10], aspect='auto')
