@@ -105,7 +105,7 @@ def update_weights(trajectory_index, weights):
 	prev_reward_value = 0.0
 	cur_reward_value =0.0
 	diff = 0. 
-	max_iter=1000
+	max_iter=4000
 
 	while ((convergence_test.prod()==0)and(number_iterations<max_iter)):		
 		
@@ -147,28 +147,24 @@ def update_weights(trajectory_index, weights):
 
 reward_weights = npy.zeros(basis_size)
 dummy_weights = npy.zeros(basis_size)
-
-# for i in range(0,5):
-# 	for j in range(0,basis_size):		
-# 		weights[j] = random.random()	
-# 	weights = weights[:]/weights.sum()
-# 	print "Initial weights: ",weights
-# 	# for j in range(0,basis_size):
-# 	dummy_weights = update_weights(0,weights)
-# 	reward_weights += dummy_weights
-# 	print "Final weights: ",dummy_weights,"\n"
-
 fake_weights = npy.zeros(basis_size)
+repeat_weights = npy.zeros(basis_size)
+
+#Repeating with random initializations of weights for same demo. 
+number_repeats=5
 
 for i in range(0,len(trajectory_lengths)):
-	for j in range(0,basis_size):
-		fake_weights[j] = random.random()
-		fake_weights = fake_weights[:]/fake_weights.sum()
-	print "Starting weights on iteration ",i,": ",fake_weights
-	dummy_weights=update_weights(i,fake_weights)
-	print "Resultant weights: ",dummy_weights
-	reward_weights+=dummy_weights
+	for k in range(0,number_repeats):
+		for j in range(0,basis_size):
+			fake_weights[j] = random.random()
+			fake_weights = fake_weights[:]/fake_weights.sum()
+		print "Starting weights on demonstration:",i," iteration: ",k,":",fake_weights
+		dummy_weights=update_weights(i,fake_weights)
+		print "Ending weights on demonstration:",i," iteration: ",k,":",dummy_weights
+		repeat_weights+=dummy_weights
+	repeat_weights=repeat_weights[:]/repeat_weights.sum()
+	print "Weights for demonstration:",i,":",repeat_weights
+	reward_weights+=repeat_weights
 reward_weights = reward_weights[:]/reward_weights.sum()
 
-# print "Initial weights: ",weights
-print reward_weights
+print "Final reward weights:",reward_weights
