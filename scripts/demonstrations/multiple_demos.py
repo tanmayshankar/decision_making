@@ -45,56 +45,34 @@ while (new_demo!='n'):
 	
 	ax = random.randrange(0,discrete_space_x)
 	ay = random.randrange(0,discrete_space_y)
+
 	current_pose[0] = ax
 	current_pose[1] = ay
 	
 	current_demo[0][0] = ax
 	current_demo[0][1] = ay
-	print "Wait for it. ",current_demo
-	# pose_train[number_demos,state_counter,0] = current_pose[0]
-	# pose_train[number_demos,state_counter,1] = current_pose[1]
 
 	path_plot[:,:]=0.
 	action='e'
 
-	while (action!='q'):	
-		# fig = plt.figure()
-		if action=='w':
-			
-			state_counter+=1
-			# pose_train[number_demos,state_counter]=current_pose
-			# pose_train[number_demos][state_counter]=current_pose
+	while (action!='q'):		
+	
+		if action=='w':			
+			state_counter+=1	
 			current_demo.append([current_pose[0]+1,current_pose[1]])
-			current_pose[0]+=1
-			print "Wait for it. 1 ",current_demo
-			# pose_train.append(current_pose)
-		if action=='a':
-			
-			state_counter+=1
-			# pose_train[number_demos,state_counter]=current_pose
-			# pose_train[number_demos][state_counter]=current_pose
+			current_pose[0]+=1					
+		if action=='a':			
+			state_counter+=1		
 			current_demo.append([current_pose[0],current_pose[1]-1])
-			current_pose[1]-=1
-			print "Wait for it. 2 ",current_demo
-			# pose_train.append(current_pose)
-		if action=='d':
-			
+			current_pose[1]-=1			
+		if action=='d':			
 			state_counter+=1
-			# pose_train[number_demos,state_counter]=current_pose
-			# pose_train[number_demos][state_counter]=current_pose
 			current_demo.append([current_pose[0],current_pose[1]+1])
 			current_pose[1]+=1
-			print "Wait for it. 3 ",current_demo
-			# pose_train.append(current_pose)
-		if action=='s':
-			
+		if action=='s':			
 			state_counter+=1
-			# pose_train[number_demos][state_counter]=current_pose
-			# pose_train[number_demos,state_counter]=current_pose
 			current_demo.append([current_pose[0]-1,current_pose[1]])
 			current_pose[0]-=1
-			print "Wait for it. 4 ",current_demo
-			# pose_train.append(current_pose)
 
 		path_plot[current_pose[0]][current_pose[1]]=1		
 		imshow(path_plot, interpolation='nearest', origin='lower', extent=[0,10,0,10], aspect='auto')
@@ -103,13 +81,13 @@ while (new_demo!='n'):
 		draw()
 		show() 
 
-		action = raw_input("Hit a key now: ")
-		# print (action)
+		action = raw_input("Hit a key now: ")		
 		
 		trajectory_lengths[number_demos] = state_counter+1
 
 	number_demos+=1
 	print "Current demo was: ",current_demo
+	
 	trajectories.append(current_demo)
 
 	new_demo = raw_input("Do you want to start a new demonstration? ")
@@ -124,7 +102,3 @@ with file('trajectories.txt','w') as outfile:
 	for data_slice in trajectories:
 		npy.savetxt(outfile,data_slice,fmt='%-7.2f')
 		outfile.write('# New slice\n')
-
-# with file('trajectory.txt','w') as outfile:	
-	# npy.savetxt(outfile,trajectories,fmt='%-7.2f')
-# print pose_train
