@@ -252,7 +252,7 @@ with file('weight_values.txt','w') as outfile:
 
 with file('trajectory_lengths.txt','w') as outfile: 
 	outfile.write('#Trajectory_lengths.\n')
-	npy.savetxt(outfile,weights,fmt='%-7.2f')
+	npy.savetxt(outfile,trajectory_lengths,fmt='%-7.2f')
 
 
 imshow(object_location_function, interpolation='nearest', origin='lower', extent=[0,10,0,10], aspect='auto')
