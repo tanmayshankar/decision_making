@@ -105,7 +105,7 @@ def update_weights(trajectory_index, weights):
 	prev_reward_value = 0.0
 	cur_reward_value =0.0
 	diff = 0. 
-	max_iter=4000
+	max_iter=1000
 
 	while ((convergence_test.prod()==0)and(number_iterations<max_iter)):		
 		
