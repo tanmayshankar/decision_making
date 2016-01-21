@@ -42,86 +42,8 @@ for i in range(0,discrete_size):
 
 gamma = 0.95
 
-# transition_matrix = npy.zeros(shape=(transition_space,transition_space,action_space,transition_space,transition_space))
-# def alt_transition_value_2(from_state,to_state,act_index):
-# 	# rel_state = from_state - to_state
-# 	# actual_state = from_state + action_space[act_index]	
-# 	# act_rel_state = actual_state - to_state
 
-# 	rel_state = from_state
-# 	rel_state[0] -= to_state[0]
-# 	rel_state[1] -= to_state[1]
-
-# 	actual_state = from_state
-# 	actual_state[0] += action_space[act_index][0]
-# 	actual_state[1] += action_space[act_index][1]
-
-# 	act_rel_state = actual_state
-# 	act_rel_state[0] -=to_state[0]
-# 	act_rel_state[1] -=to_state[1]
-
-# 	if (npy.linalg.norm(rel_state)>2):
-# 		return 0.
-# 	else:
-# 		if (rel_state==actual_state):
-# 			return 0.7
-# 		if (npy.linalg.norm(rel_state)==0):
-# 			return 0.1
-# 		if (npy.linalg.norm(action_space[act_index])==1):
-# 			if (rel_state==(from_state-action_space[act_index])or(npy.linalg.norm(rel_state)>1)):
-# 				return 0.
-# 			else: 
-# 				return 0.1
-# 		else: 
-# 			if (npy.linalg.norm(rel_state)==1):
-# 				return 0.1
-# 			else:
-# 				return 0.
-
-# def alt_transition_value(from_state,to_state,act_index):
-# 	# rel_state = from_state - to_state
-# 	# actual_state = from_state + action_space[act_index]	
-# 	# act_rel_state = actual_state - to_state
-
-# 	# return 1./9
-# 	rel_state = from_state
-# 	rel_state[0] -= to_state[0]
-# 	rel_state[1] -= to_state[1]
-
-# 	actual_state = from_state
-# 	actual_state[0] += action_space[act_index][0]
-# 	actual_state[1] += action_space[act_index][1]
-
-# 	act_rel_state = actual_state
-# 	act_rel_state[0] -=to_state[0]
-# 	act_rel_state[1] -=to_state[1]
-
-# 	opp_state = from_state
-# 	opp_state[0] -= action_space[act_index][0]
-# 	opp_state[1] -= action_space[act_index][1]
-	
-# 	if (to_state==actual_state):
-# 		return 0.7
-# 	if (npy.linalg.norm(rel_state)==0.):
-# 		return 0.1
-# 	if (npy.linalg.norm(action_space[act_index])==1.):
-# 		if ((rel_state==opp_state)or(npy.linalg.norm(rel_state)>1.)):		
-# 			return 0.
-# 		else: 
-# 			return 0.1
-# 	else: 
-# 		if (npy.linalg.norm(rel_state)==1):
-# 			return 0.1
-# 		else:
-# 			return 0.
-
-# def transition_value(from_state,to_state,act_index):
-def transition_value(to_state_i,to_state_j,act_index):
-	# rel_state = from_state - to_state
-	# actual_state = from_state + action_space[act_index]	
-	# act_rel_state = actual_state - to_state
-	# return 1./9
-
+def transition_value(to_state_i,to_state_j,act_index):	
 	trans_mat_1 = [[0.,0.7,0.],[0.1,0.1,0.1],[0.,0.,0.]]
 	trans_mat_2 = [[0.7,0.1,0.],[0.1,0.1,0.],[0.,0.,0.]]
 
