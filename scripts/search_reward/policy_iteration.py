@@ -35,10 +35,10 @@ reward_function = npy.zeros(shape=(discrete_size,discrete_size))
 reward_function = weights[0]*basis_functions[0]+weights[1]*basis_functions[1]+weights[2]*basis_functions[2]
 
 dummy_max = npy.amax(reward_function)
-print dummy_max
-for i in range(0,discrete_size):
-	for j in range(0,discrete_size):
-		reward_function[i,j] += (i+j)*dummy_max/100
+# print dummy_max
+# for i in range(0,discrete_size):
+# 	for j in range(0,discrete_size):
+# 		reward_function[i,j] += (i+j)*dummy_max/100
 
 gamma = 0.95
 
@@ -106,3 +106,8 @@ policy_iteration()
 print "These are the value functions."
 for t in range(0,time_limit):
 	print value_functions[t]
+
+
+with file('output_policy.txt','w') as outfile: 
+	outfile.write('#Policy.\n')
+	npy.savetxt(outfile,optimal_policy,fmt='%-7.2f')
